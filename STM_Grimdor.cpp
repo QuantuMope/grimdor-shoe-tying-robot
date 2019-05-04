@@ -20,7 +20,7 @@ int j = 0;
 int p = 0;
 int t1 = 0;
 int t2 = 0;
-int clutchstep;
+int clutchstep = 0;
 int firstjump = 0;
 int firstadjust = 0;
 int firstlimitadjust = 0;
@@ -85,7 +85,7 @@ int clutch(int j)
   // Number of steps to jump between gears ending right before gear mesh begins.
   JUMP = 825;
 
-  Direction = FORWARD;
+  direction = FORWARD;
 
   // Step numbers for each clutch case
   switch(j)
@@ -200,7 +200,7 @@ int clutch(int j)
       secondlimitadjust = -1;
       secondINjumpback = 0;
       secondOUTjumpback = 80;
-      Direction = BACKWARD;
+      direction = BACKWARD;
       break;
   }
 
@@ -241,7 +241,7 @@ int clutch(int j)
     while(i < (p))
     {
       // Dual motor "shimmy" to prevent gear catching.
-      NEMA17->step(2, Direction, MICROSTEP);
+      NEMA17->step(2, direction, MICROSTEP);
       s28BYJ48.step(clutchstep);
       i++;
     }
@@ -262,6 +262,12 @@ int clutch(int j)
     // Jumpback values after limitswitch is hit.
     s28BYJ48.step(secondINjumpback);
     s28BYJ48.step(secondOUTjumpback);
+}
+
+int nema_move(int speed, int steps, char direction)
+{
+  NEMA17->setSpeed(speed);
+  NEMA17->step(steps, direction, DOUBLE);
 }
 
 void loop() {
@@ -290,32 +296,25 @@ void loop() {
     // SHOE TYING ALGORITHM
 
     // X-axis move out: Grab laces.
-    NEMA17->setSpeed(40);
-    NEMA17->step(160,BACKWARD,DOUBLE);
+    nema_move(40, 160, BACKWARD);
     clutch(32);
     // Y-axis Move up: Move up past shoe.
-    NEMA17->setSpeed(150);
-    NEMA17->step(6800,FORWARD,DOUBLE);
+    nema_move(150, 6800, FORWARD);
     clutch(21);
     // 90 degrees rotate: Have hooks facing up.
-    NEMA17->setSpeed(120);
-    NEMA17->step(1400,FORWARD,DOUBLE);
+    nema_move(120, 1400, FORWARD);
     clutch(13);
     // X-axis move in: Move in until laces are past hooks.
-    NEMA17->setSpeed(150);
-    NEMA17->step(260,FORWARD,DOUBLE);
+    nema_move(150, 260, FORWARD);
     clutch(31);
     // 225 degrees rotate: Rotate so that hooks can grab laces.
-    NEMA17->setSpeed(150);
-    NEMA17->step(3090,FORWARD,DOUBLE);
+    nema_move(150, 3090, FORWARD);
     clutch(13);
     // X-axis move out: Pull out until laces are engaged in the hooks.
-    NEMA17->setSpeed(40);
-    NEMA17->step(110,BACKWARD,DOUBLE);
+    nema_move(40, 110, BACKWARD);
     clutch(31);
     // 45 Degrees rotate: Rotate down so that hooks are pointing down to avoid collision.
-    NEMA17->setSpeed(120);
-    NEMA17->step(670,BACKWARD,DOUBLE);
+    nema_move(120, 670, BACKWARD);
     // Clutch: 1 to 3 SPECIAL CASE
     clutch(130);
     // X-axis move out: move out in 8 individual spurts seperated by 500ms.
@@ -337,12 +336,10 @@ void loop() {
     NEMA17->step(27,BACKWARD,DOUBLE);
     clutch(32);
     // Y-axis move down: move down to be more level with shoe.
-    NEMA17->setSpeed(200);
-    NEMA17->step(1000,BACKWARD,DOUBLE);
+    nema_move(200, 1000, BACKWARD);
     clutch(21);
-    // 90 degrees rotate: Rotate so hooks are side to side
-    NEMA17->setSpeed(120);
-    NEMA17->step(1370,FORWARD,DOUBLE);
+    // 90 degrees rotate: Rotate so hooks are side to side.
+    nema_move(120, 1370, FORWARD);
     clutch(13);
     // X-axis mvoe out: move out in 3 large spurts so that laces shoot through to the opposite side.
     NEMA17->setSpeed(150);
@@ -353,40 +350,33 @@ void loop() {
     NEMA17->step(120,BACKWARD,DOUBLE);
     clutch(32);
     // Y-axis move down:  Go down to reset.
-    NEMA17->setSpeed(200);
-    NEMA17->step(6000,BACKWARD,DOUBLE);
+    nema_move(200, 6000, BACKWARD);
     clutch(23);
+
 
     //*** FIRST LACE IS DONE / SECOND KNOT START ***
 
 
     // X-axis move in : reset.
-    NEMA17->setSpeed(40);
-    NEMA17->step(215,FORWARD,DOUBLE);
+    nema_move(40, 215, FORWARD);
     clutch(32);
     // Y-axis Move up: Move up past shoe.
-    NEMA17->setSpeed(150);
-    NEMA17->step(6650,FORWARD,DOUBLE);
+    nema_move(150, 6650, FORWARD);
     clutch(21);
     // 90 degrees rotate: Have hooks facing up.
-    NEMA17->setSpeed(120);
-    NEMA17->step(1175,FORWARD,DOUBLE);
+    nema_move(120, 1175, FORWARD);
     clutch(13);
     // X-axis move in:  Move in until laces are past hooks.
-    NEMA17->setSpeed(150);
-    NEMA17->step(255,FORWARD,DOUBLE);
+    nema_move(150, 255, FORWARD);
     clutch(31);
     // 225 degrees rotate: Rotate so that hooks can grab laces.
-    NEMA17->setSpeed(120);
-    NEMA17->step(3000,FORWARD,DOUBLE);
+    nema_move(120, 3000, FORWARD);
     clutch(13);
     // X-axis move out just in case: Move out until hooks catch laces.
-    NEMA17->setSpeed(40);
-    NEMA17->step(95,BACKWARD,DOUBLE);
+    nema_move(40, 95, BACKWARD);
     clutch(31);
     // 45 Degrees rotate: rotate so that hooks are facing down to avoid collision.
-    NEMA17->setSpeed(120);
-    NEMA17->step(575,BACKWARD,DOUBLE);
+    nema_move(120, 575, BACKWARD);
     // Clutch: 1 to 3 SPECIAL CASE.
     clutch(130);
     // X-axis move out: move out in 3 spurts.
@@ -398,12 +388,10 @@ void loop() {
     NEMA17->step(26,BACKWARD,DOUBLE);
     clutch(32);
     // Y-axis Move down to level with shoe.
-    NEMA17->setSpeed(200);
-    NEMA17->step(1275,BACKWARD,DOUBLE);
+    nema_move(200, 1275, BACKWARD);
     clutch(23);
     // X-axis move out:  Pull until shoeknot is done.
-    NEMA17->setSpeed(40);
-    NEMA17->step(290 ,BACKWARD,DOUBLE);
+    nema_move(40, 290, FORWARD);
 
     // Reverts boolean variables back to standby values.
     ledOn = 0;
