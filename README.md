@@ -1,6 +1,6 @@
 # [Grimdor: Underactuated Shoe Tying Robot](https://www.youtube.com/watch?v=erNi07dH5pw)
 ![](Final_Render/gb1_image.JPG)
-## University of California, Davis Senior Design Project</br>
+## University of California, Davis, Senior Design Project</br>
 
 Worked in a team of five undergraduates in the department of mechanical engineering to create a robot capable of tying a shoe with the following design restraints:
 - Max of two actuators
