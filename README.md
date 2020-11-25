@@ -1,4 +1,4 @@
-# [Grimdor: Underactuated Shoe Tying Robot Manipulator](https://www.youtube.com/watch?v=erNi07dH5pw)
+##[Grimdor: Underactuated Shoe Tying Robot Manipulator](https://www.youtube.com/watch?v=erNi07dH5pw)
 ![](Final_Render/gb1_image.JPG)
 ## University of California, Davis, Senior Design Project</br>
 
